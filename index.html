@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Khodam</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro",sans-serif;
+}
+
+body{
+  height:100vh;
+  overflow:hidden;
+  color:#e5f2ff;
+  background:radial-gradient(circle at top,#0ea5e9,#020617 70%);
+}
+
+/* PARTIKEL AIR */
+.particles{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+}
+.particles span{
+  position:absolute;
+  bottom:-120px;
+  width:30px;
+  height:30px;
+  background:rgba(56,189,248,.25);
+  border-radius:50%;
+  animation: float 22s linear infinite;
+  backdrop-filter: blur(8px);
+}
+@keyframes float{
+  0%{transform:translateY(0) scale(.5);opacity:0}
+  15%{opacity:.8}
+  100%{transform:translateY(-130vh) scale(1.3);opacity:0}
+}
+
+/* APP */
+.app{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  backdrop-filter:blur(20px);
+  transition: transform .2s ease;
+}
+
+.card{
+  background:rgba(2,132,199,.18);
+  backdrop-filter:blur(30px);
+  border-radius:32px;
+  padding:30px;
+  width:300px;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(14,165,233,.15);
+}
+
+h1{font-size:36px}
+.subtitle{opacity:.8;margin:10px 0 20px}
+
+input{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:20px;
+  background:rgba(255,255,255,.25);
+  color:white;
+  margin-bottom:15px;
+}
+
+button{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(135deg,rgba(56,189,248,.35),rgba(14,165,233,.2));
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  backdrop-filter:blur(25px);
+}
+
+button span{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  background:rgba(255,255,255,.4);
+  animation:ripple .6s linear;
+}
+@keyframes ripple{
+  to{transform:scale(4);opacity:0}
+}
+
+.credit{
+  margin-top:12px;
+  font-size:12px;
+  opacity:.6;
+}
+
+/* LOADING */
+.loading{
+  position:fixed;
+  inset:0;
+  background:rgba(2,6,23,.85);
+  backdrop-filter:blur(40px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:5;
+}
+.loading .orb{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:radial-gradient(circle at top,#e0f2fe,#38bdf8);
+  animation:dive 2.5s infinite ease-in-out;
+}
+@keyframes dive{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.5)}
+  100%{transform:scale(1)}
+}
+
+/* RESULT */
+.result{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:6;
+}
+.result .card{
+  animation: rise 1s ease forwards;
+}
+@keyframes rise{
+  from{transform:translateY(80px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="app" id="app">
+  <div class="card">
+    <h1>Cek Khodam</h1>
+    <p class="subtitle">Masukkan nama untuk memulai proses analisis energi</p>
+    <input placeholder="Nama kamu">
+    <button onclick="cek(event)">Cek Sekarang</button>
+    <div class="credit">created by hnnaka</div>
+  </div>
+</div>
+
+<div class="loading" id="loading">
+  <div class="orb"></div>
+  <p style="margin-top:20px;opacity:.75;">Mengalir ke lapisan terdalam...</p>
+</div>
+
+<div class="result" id="result">
+  <div class="card">
+    <h2 id="kname"></h2>
+    <p id="kdesc"></p>
+    <button onclick="reset()">Cek Lagi</button>
+  </div>
+</div>
+
+<script>
+// PARTIKEL
+const p=document.getElementById("particles");
+for(let i=0;i<45;i++){
+  let s=document.createElement("span");
+  let size=Math.random()*50+20;
+  s.style.width=size+"px";
+  s.style.height=size+"px";
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=(Math.random()*10+18)+"s";
+  p.appendChild(s);
+}
+
+// DEPTH EFFECT
+document.addEventListener("mousemove",e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*20;
+  const y=(e.clientY/window.innerHeight-0.5)*20;
+  document.getElementById("app").style.transform=
+    `translate(${x}px,${y}px)`;
+});
+
+// KHODAM
+const khodam=[
+ {n:"Harimau ODGJ",d:"Sangar, tapi emosinya random."},
+ {n:"Kera Makan Gacoan",d:"Gercep, pedes dikit ngamuk."},
+ {n:"Panda Rebahan",d:"Potensi besar, aksi nol."},
+ {n:"Buaya Gabut",d:"Banyak rencana, jarang jalan."},
+ {n:"Ikan Lupa Air",d:"Sering salah tempat."}
+];
+
+// RIPPLE + LOGIC
+function cek(e){
+  const btn=e.currentTarget;
+  const r=document.createElement("span");
+  r.style.left=e.offsetX+"px";
+  r.style.top=e.offsetY+"px";
+  btn.appendChild(r);
+  setTimeout(()=>r.remove(),600);
+
+  loading.style.display="flex";
+  setTimeout(()=>{
+    const k=khodam[Math.floor(Math.random()*kh
