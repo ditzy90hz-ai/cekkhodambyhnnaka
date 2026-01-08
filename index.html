@@ -136,47 +136,160 @@ for(let i=0;i<40;i++){
 }
 
 // database khodam
-const KHODAM=[
-{
-  nama:"Harimau Putih Penjaga Malam",
-  elemen:"Bayangan",
-  level:"SS",
-  aura:"Dominan & protektif",
-  pantangan:"Mengkhianati janji",
-  desc:"Khodam ini muncul pada jiwa yang keras kepala namun setia. Ia memperkuat insting bertahan hidup dan membuat pemiliknya sulit dikalahkan secara mental."
-},
-{
-  nama:"Naga Langit Timur",
-  elemen:"Petir",
-  level:"SSS",
-  aura:"Karismatik",
-  pantangan:"Meremehkan orang lain",
-  desc:"Energi langit mengalir kuat. Pemilik khodam ini sering tidak sadar bahwa ucapannya punya pengaruh besar pada sekitar."
-},
-{
-  nama:"Serigala Senja",
-  elemen:"Angin",
-  level:"A",
-  aura:"Tenang & waspada",
-  pantangan:"Terlalu menyendiri",
-  desc:"Khodam ini hadir pada mereka yang sering memendam beban. Ia melindungi dalam diam dan memberi intuisi tajam."
-},
-{
-  nama:"Ular Hitam Tanah Dalam",
-  elemen:"Bumi",
-  level:"S",
-  aura:"Misterius",
-  pantangan:"Serakah",
-  desc:"Melambangkan kesabaran dan kekuatan tersembunyi. Potensinya besar jika tidak disalahgunakan."
-},
-{
-  nama:"Burung Api Fajar",
-  elemen:"Api",
-  level:"A+",
-  aura:"Optimis & berani",
-  pantangan:"Emosi berlebihan",
-  desc:"Khodam pembangkit semangat. Cocok bagi jiwa petarung yang sering jatuh namun selalu bangkit."
+/* =========================================
+   DATABASE KHODAM GEN-Z VIRAL EDITION
+   WARNING: Bikin ketagihan ngecek ulang
+   ========================================= */
+
+// rarity weight (semakin kecil semakin langka)
+const RARITY = {
+  COMMON: 40,
+  UNCOMMON: 25,
+  RARE: 15,
+  EPIC: 10,
+  LEGENDARY: 7,
+  MYTHIC: 2,
+  COSMIC: 1
+};
+
+const KHODAM = [
+  // COMMON
+  {
+    nama: "Cicak Kosan Tengah Malam",
+    elemen: "Dinding",
+    rarity: "COMMON",
+    aura: "Receh tapi setia",
+    pantangan: "Ngomong gede tapi usaha nol",
+    desc: "Khodam rakyat jelata. Selalu hadir saat kamu overthinking jam 2 pagi."
+  },
+  {
+    nama: "Kipas Angin Berisik",
+    elemen: "Angin",
+    rarity: "COMMON",
+    aura: "Mengganggu tapi dirindukan",
+    pantangan: "Tidur tanpa niat",
+    desc: "Memberi kesejukan sekaligus emosi. Fokus hidup naik turun."
+  },
+
+  // UNCOMMON
+  {
+    nama: "Kucing Oren Multiverse",
+    elemen: "Chaos",
+    rarity: "UNCOMMON",
+    aura: "Random",
+    pantangan: "Menganggap remeh hal kecil",
+    desc: "Pemiliknya sering apes tapi selalu selamat dengan cara absurd."
+  },
+  {
+    nama: "Burung Hantu Scroll Malam",
+    elemen: "Bayangan",
+    rarity: "UNCOMMON",
+    aura: "Mager intelektual",
+    pantangan: "Tidur cepat",
+    desc: "Membuatmu bijak di jam yang salah."
+  },
+
+  // RARE
+  {
+    nama: "Serigala Spotify Senja",
+    elemen: "Angin",
+    rarity: "RARE",
+    aura: "Melankolis estetik",
+    pantangan: "Lagu upbeat",
+    desc: "Khodam anak senja. Semakin galau, semakin kuat."
+  },
+  {
+    nama: "Ular Hitam Deadline",
+    elemen: "Tekanan",
+    rarity: "RARE",
+    aura: "Produktif panik",
+    pantangan: "Santai terlalu awal",
+    desc: "Kekuatan muncul H-1. Selalu mepet tapi selesai."
+  },
+
+  // EPIC
+  {
+    nama: "Harimau Putih Penjaga Mental",
+    elemen: "Bayangan",
+    rarity: "EPIC",
+    aura: "Dominan",
+    pantangan: "Dikhianati",
+    desc: "Mental baja. Dibenci tapi ditakuti."
+  },
+  {
+    nama: "Phoenix Ghosting",
+    elemen: "Api",
+    rarity: "EPIC",
+    aura: "Bangkit berulang",
+    pantangan: "Balas chat cepat",
+    desc: "Menghilang, lalu muncul lebih kuat dan glow up."
+  },
+
+  // LEGENDARY
+  {
+    nama: "Naga WiFi Tetangga",
+    elemen: "Petir",
+    rarity: "LEGENDARY",
+    aura: "Overpowered",
+    pantangan: "Ganti password",
+    desc: "Koneksi hidup stabil walau kondisi kacau."
+  },
+  {
+    nama: "Macan Putih Algoritma",
+    elemen: "Data",
+    rarity: "LEGENDARY",
+    aura: "Viral magnet",
+    pantangan: "Konsisten",
+    desc: "Sekali muncul, hidupmu masuk FYP tanpa sebab jelas."
+  },
+
+  // MYTHIC
+  {
+    nama: "Entitas Rebah Abadi",
+    elemen: "Kasur",
+    rarity: "MYTHIC",
+    aura: "Mager Ilahi",
+    pantangan: "Rajin",
+    desc: "Mengajarkan bahwa tidak semua orang ditakdirkan produktif."
+  },
+
+  // COSMIC
+  {
+    nama: "Admin Semesta",
+    elemen: "Realita",
+    rarity: "COSMIC",
+    aura: "Tidak bisa diprotes",
+    pantangan: "Protes takdir",
+    desc: "Khodam tertinggi. Sekali dapat, hidupmu plot armor."
+  }
+];
+
+/* ==============================
+   GACHA SYSTEM (BIAR VIRAL)
+   ============================== */
+
+function rollRarity() {
+  const pool = [];
+  for (let r in RARITY) {
+    for (let i = 0; i < RARITY[r]; i++) pool.push(r);
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
 }
+
+function summonKhodam() {
+  const rarity = rollRarity();
+  const kandidat = KHODAM.filter(k => k.rarity === rarity);
+  const khodam = kandidat[Math.floor(Math.random() * kandidat.length)];
+
+  return {
+    ...khodam,
+    warning: "Hanya hiburan. Jangan dijadikan pedoman hidup 😭"
+  };
+}
+
+// ====== CONTOH PEMAKAIAN ======
+console.log("🔮 KHODAM KAMU HARI INI 🔮");
+console.log(summonKhodam());
 ];
 
 // hash nama → konsisten
